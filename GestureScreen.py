@@ -3,8 +3,6 @@ from game_elements import *
 
 import pygame
 import pygame_widgets
-from pygame_widgets.button import Button
-
 
 class GestureScreen: 
     def __init__(self, game):
@@ -14,10 +12,9 @@ class GestureScreen:
         self.screen = self.game.window  # Use the game's window for rendering
         pygame.display.set_caption(self.game.window_caption)  # Use the game's caption
 
-
         self.clock = pygame.time.Clock()
         self.running = True
-        self.gd = GestureDetector(10)
+        self.gd = GestureDetector(20)
 
         self.player: Player = None
         self.mg: MazeGen = None
@@ -58,14 +55,8 @@ class GestureScreen:
         # Status text
         self.text = self.font.render(f"Status: Not Generated", True, "purple")
 
-        # Set grid width and height to 720
-        grid_size = 720
-
-        # Dynamically set shrinkRatio based on grid size (720x720)
-        sr = grid_size // 20  # This ensures the grid cells fit within 720x720
-
-        # Create grid with dynamically calculated shrinkRatio
-        self.grid = Grid((grid_size, grid_size), sr)
+        sr = 80
+        self.grid = Grid((self.screen.get_width(), self.screen.get_height() - self.heightOffset), sr)
 
         # Game overlay surface
         self.gameFinishedOverlay = pygame.Surface(
@@ -122,7 +113,7 @@ class GestureScreen:
 
     def addGameContent(self):
         if self.canGenerate:
-            self.canGenerate = self.mg.generate()  # coordinates are stored in self.mg
+            self.canGenerate = self.mg.generate() 
         else:
             self.grid.resetColorMarkers()
             if self.mg.coordinates == []:
@@ -132,7 +123,6 @@ class GestureScreen:
         if not self.generating and self.canUpdateTitle:
             self.grid.generateGrid(self.player)
             self.player.parse_input_and_draw(self.gd.gestures)
-            # if player isn't fully a part of the grid
             if not self.grid.get_rect().contains(self.player.collider):
                 self.player.collided(self.grid.get_rect(), outOfBounds=True)
 
@@ -161,10 +151,6 @@ class GestureScreen:
             self.text = self.font.render(f"Status: {'Generated' if not self.generating else 'Generating'}", True,
                                          "green" if not self.generating else "purple")
         self.addStream()
-
-        # Rect Order  -> (top_left_x, top_left_y, ending_x, ending_y)
-        pygame.draw.rect(self.screen, "purple",
-        pygame.Rect(0, self.heightOffset - 10, self.screen.get_width(), 10))  # dividing line
         self.addGameContent()
 
         if self.grid.completed:

@@ -1,33 +1,32 @@
 import pygame
 from menu import *
 
-class Game():
+class Game:
     def __init__(self):
         pygame.init()
-        pygame.mixer.init()  # Initialize the mixer for sound effects
+        pygame.mixer.init()
 
-        # General game states
         self.running, self.playing = True, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
-        # Display settings
-        self.DISPLAY_W, self.DISPLAY_H = 1280, 720
-        self.window_caption = "AMAZESIGN"  # Window caption
-        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))  # Off-screen rendering
-        self.window = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H))  # Main game window
+        # Dynamically get the screen resolution
+        self.DISPLAY_W, self.DISPLAY_H = pygame.display.Info().current_w, pygame.display.Info().current_h
+        
+        # Set fullscreen mode using the current screen resolution
+        self.window_caption = "AMAZESIGN"
+        self.window = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H), pygame.FULLSCREEN)
         pygame.display.set_caption(self.window_caption)
 
-        # Fonts and colors
+        # Create a display surface to render all the game elements
+        self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
+
         self.font_name = 'assets/fonts/KARNIBLA-black.ttf'
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
 
-        # Load sound effects
         self.button_sfx = pygame.mixer.Sound("assets/sfx/button-sfx.mp3")
-
-        # Load and play background music
         pygame.mixer.music.load("assets/musics/bg-main-music.mp3")
-        pygame.mixer.music.set_volume(0.5)  # Set volume (0.0 to 1.0)
-        pygame.mixer.music.play(loops=-1, start=0.0)  # Play the music in a loop (-1 means loop forever)
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(loops=-1, start=0.0)
 
         self.main_menu = MainMenu(self)
         self.options = OptionsMenu(self)
@@ -62,3 +61,12 @@ class Game():
     def play_sound(self, sound):
         """Play a sound effect."""
         sound.play()
+
+    def game_loop(self):
+        while self.playing:
+            self.check_events()
+            self.display.fill(self.BLACK)  # Clear screen
+            # Update and render game elements here (e.g., player, enemies)
+            self.window.blit(self.display, (0, 0))  # Draw to the main window
+            pygame.display.update()
+            self.reset_keys()

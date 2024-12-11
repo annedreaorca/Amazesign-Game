@@ -50,7 +50,7 @@ class GestureScreen:
 
         self.heightOffset = 10  
 
-        sr = 40
+        sr = 60
         self.grid = Grid((1080, 720), sr)
 
         self.gameFinishedOverlay = pygame.Surface(
@@ -77,10 +77,10 @@ class GestureScreen:
 
     def addStream(self):
         # Set stream size
-        stream_width = 250
-        stream_height = 150
+        # stream_width = 250
+        # stream_height = 150
         
-        self.streamArea = pygame.Surface((stream_width, stream_height))
+        # self.streamArea = pygame.Surface((stream_width, stream_height))
 
         # Calculate available space below the maze for positioning
         total_available_height = self.screen.get_height() - self.heightOffset - self.streamArea.get_height() - self.gestureIconLayout.get_height() - 20

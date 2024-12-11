@@ -55,7 +55,7 @@ class GestureDetector:
         self.recognizer = vision.GestureRecognizer.create_from_options(options)
 
     def initStream(self):
-        self.cam = cv.VideoCapture(1)
+        self.cam = cv.VideoCapture(0)
 
         if not self.cam.isOpened():
             print("Unable to access camera") 

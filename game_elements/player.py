@@ -9,7 +9,7 @@ class Particle:
         self.color = color
         self.lifetime = lifetime  # How many frames the particle will last
         self.velocity = [random.uniform(-1, 1), random.uniform(-1, 1)]  # Random direction
-
+    
     def update(self):
         # Move the particle
         self.x += self.velocity[0]
@@ -26,15 +26,16 @@ class Particle:
         if self.lifetime > 0:
             pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), int(self.size))
 
+
 class Player:
     def __init__(self, screen, startPos: (), size=20, sprite_path="assets/character.png"):  
         self.screen = screen
         self.size = size  
-        self.position = startPos 
-        self.x, self.y = startPos 
+        self.startPos = startPos
+        self.x, self.y = (startPos[0], startPos[1])
         self.move_direction = 5
+        self.particles = []  # Initialize the particle system
 
-        # Load sprite if available
         if sprite_path:
             self.sprite = pygame.image.load(sprite_path)
             self.sprite = pygame.transform.scale(self.sprite, (self.size * 3, self.size * 3))  
@@ -42,51 +43,61 @@ class Player:
             self.sprite = None  
 
         self.collider = self.getCollider()
-        self.particles = []  # List to store particle objects
 
     def draw(self): 
+        # Update and draw particles
+        for particle in self.particles[:]:
+            particle.update()
+            particle.draw(self.screen)
+            if particle.lifetime <= 0:  
+                self.particles.remove(particle)
+
+        # Draw the player sprite or fallback shape
         if self.sprite:
-            self.screen.blit(self.sprite, (self.position[0] - self.size * 1.5, self.position[1] - self.size * 1.5)) 
+            self.screen.blit(self.sprite, (self.x - self.size * 1.5, self.y - self.size * 1.5)) 
         else:
-            pygame.draw.circle(self.screen, "#ffffff", self.position, self.size)
+            pygame.draw.circle(self.screen, "#ffffff", (self.x, self.y), self.size)
 
     def getCollider(self):
-        """Update and return the player's collider (rectangular area for collision detection)."""
         sr = self.size * 3
-        self.collider = pygame.Rect(self.position[0] - sr / 2, self.position[1] - sr / 2, sr, sr)
+        self.collider = pygame.Rect(self.x - sr / 2, self.y - sr / 2, sr, sr)
         return self.collider
 
     def parse_input_and_draw(self, gestureList): 
-        """Process gesture inputs to move player."""
-        if not gestureList: return
+        if not gestureList:
+            return
         last_gesture = gestureList[-1]['Name']
         
         # Update position based on the latest gesture
         if last_gesture == "Closed_Fist":
-            self.position = (self.position[0] + self.move_direction, self.position[1])
+            self.x += self.move_direction 
         elif last_gesture == "Open_Palm":
-            self.position = (self.position[0] - self.move_direction, self.position[1])  
+            self.x -= self.move_direction  
         elif last_gesture == "Thumb_Up":
-            self.position = (self.position[0], self.position[1] - self.move_direction) 
+            self.y -= self.move_direction 
         elif last_gesture == "Thumb_Down":
-            self.position = (self.position[0], self.position[1] + self.move_direction) 
+            self.y += self.move_direction 
         elif last_gesture == "ILoveYou":
-            self.position = self.startPos  # Reset to start position
+            self.x = self.startPos[0]
+            self.y = self.startPos[1]
         
         self.prevent_out_of_bounds()
+
+        # Create a particle effect
+        self.create_particle()
 
         self.collider = self.getCollider()
         self.draw()
 
     def create_particle(self):
-        # Create a new particle at the player's current position
-        color = (255, 255, 255, 255)  # White with full opacity
-        size = random.uniform(3, 6)  # Random size for the particle
-        particle = Particle(self.x, self.y, size, color)
+        """Generate a particle at the player's position."""
+        particle_color = (255, 255, 255, 150)  # White with some transparency
+        particle_size = random.randint(3, 8)  # Random size
+        particle_lifetime = random.randint(20, 50)  # Random lifetime
+        particle = Particle(self.x, self.y, particle_size, particle_color, particle_lifetime)
         self.particles.append(particle)
 
     def prevent_out_of_bounds(self):
-        """Ensure the player doesn't move out of the screen boundaries."""
         screen_width, screen_height = self.screen.get_size()
         
         if self.x - self.size * 1.5 < 0:
@@ -100,7 +111,6 @@ class Player:
             self.y = screen_height - self.size * 1.5  
 
     def collided(self, rect, outOfBounds=False):
-        """Check for collisions and adjust player's position accordingly."""
         diffList = []
         if not outOfBounds:
             diffList = [
@@ -120,12 +130,11 @@ class Player:
         absDiff = [abs(difference) for difference in diffList]
         index = absDiff.index(min(absDiff)) 
 
-        # Adjust position based on collision
         if index == 0:
-            self.position = (self.position[0], self.position[1] - self.move_direction)
+            self.y -= self.move_direction  
         elif index == 1:
-            self.position = (self.position[0], self.position[1] + self.move_direction)
+            self.y += self.move_direction  
         elif index == 2:
-            self.position = (self.position[0] - self.move_direction, self.position[1])
+            self.x -= self.move_direction  
         elif index == 3:
-            self.x += self.move_direction 
+            self.x += self.move_direction  

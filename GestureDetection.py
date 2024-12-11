@@ -11,7 +11,7 @@ class GestureDetector:
         self.gestures: [] = []
         # https: // ai.google.dev / edge / mediapipe / solutions / vision / gesture_recognizer
         self.possibleGestures = ["None", "Closed_Fist", "Open_Palm", "Thumb_Down",
-                                 "Thumb_Up", "ILoveYou"]
+        "Thumb_Up", "ILoveYou"]
 
         self.frame_count: int = 0
         self.cam: cv.VideoCapture = None
@@ -50,8 +50,8 @@ class GestureDetector:
     def configRecognizer(self, model_path):
         base_options = python.BaseOptions(model_asset_path=model_path)
         options = vision.GestureRecognizerOptions(base_options=base_options,
-                                                  running_mode=vision.RunningMode.LIVE_STREAM,
-                                                  result_callback=self.print_result)
+        running_mode=vision.RunningMode.LIVE_STREAM,
+        result_callback=self.print_result)
         self.recognizer = vision.GestureRecognizer.create_from_options(options)
 
     def initStream(self):

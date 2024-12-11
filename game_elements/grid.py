@@ -82,6 +82,11 @@ class Grid(pygame.Surface):
                     elif self.get((h_layer, v_layer)) == "yellow" and rect.colliderect(player.collider):
                         self.completed = True
 
+    def get_cell(self, position: (int, int)):
+        x, y = position
+        if 0 <= x < self.grid_w and 0 <= y < self.grid_h:
+            return self.states[y][x]
+        return None 
 
     def switchTheme(self, new_theme):
         self.loadTheme(new_theme)

@@ -37,6 +37,7 @@ class GestureScreen:
         self.iconOffset: int = None 
         self.heightOffset: int = None 
 
+        self.game_over = False  # Track if the game is finished
         self.initUI(gap=20) 
 
     def initUI(self, gap): 
@@ -76,33 +77,20 @@ class GestureScreen:
             self.generating = True
 
     def addStream(self):
-        # Set stream size
-        # stream_width = 250
-        # stream_height = 150
-        
-        # self.streamArea = pygame.Surface((stream_width, stream_height))
-
-        # Calculate available space below the maze for positioning
         total_available_height = self.screen.get_height() - self.heightOffset - self.streamArea.get_height() - self.gestureIconLayout.get_height() - 20
         grid_y = (total_available_height - self.grid.get_height()) // 2
         available_height = self.screen.get_height() - (grid_y + self.grid.get_height()) - self.heightOffset
         stream_y = (available_height - self.streamArea.get_height()) // 2 + grid_y + self.grid.get_height()
 
-        # Center the stream horizontally
         stream_x = (self.screen.get_width() - self.streamArea.get_width()) // 2
 
-        # Create separate surfaces for left and right gesture icon layouts
-        # Calculate the width of each layout based on the number of icons and the gap
-        left_gesture_icon_layout_width = (len(self.gd.possibleGestures[:3]) * (self.gd.height / 4)) + (len(self.gd.possibleGestures[:3]) - 1) * self.iconOffset
+        # Corrected left_gesture_icon_layout_width to avoid extra space
+        left_gesture_icon_layout_width = len(self.gd.possibleGestures[:3]) * (self.gd.height / 4) + (len(self.gd.possibleGestures[:3]) - 1) * self.iconOffset
         right_gesture_icon_layout_width = (len(self.gd.possibleGestures[3:]) * (self.gd.height / 4)) + (len(self.gd.possibleGestures[3:]) - 1) * self.iconOffset
         
-        left_gesture_icon_layout = pygame.Surface((left_gesture_icon_layout_width, self.gd.height / 4))  
-        right_gesture_icon_layout = pygame.Surface((right_gesture_icon_layout_width, self.gd.height / 4))  
-        
-        left_gesture_icon_layout.fill("white")
-        right_gesture_icon_layout.fill("white")
+        left_gesture_icon_layout = pygame.Surface((left_gesture_icon_layout_width, self.gd.height / 4), pygame.SRCALPHA)
+        right_gesture_icon_layout = pygame.Surface((right_gesture_icon_layout_width, self.gd.height / 4), pygame.SRCALPHA)
 
-        # Left side icons (first three gestures)
         addedOffset = 0
         left_gestures = self.gd.possibleGestures[:3]
         for i, gesture in enumerate(left_gestures):
@@ -111,14 +99,12 @@ class GestureScreen:
                 if self.gd.gestures[-1]["Name"] == gesture:
                     name = gesture + "_f"
             
-            # Load from the left folder
             img = pygame.image.load(f"icons/left/{name}.png").convert_alpha()
             rect = pygame.Rect(addedOffset, 0, self.gd.height / 4, self.gd.height / 4)
             img = pygame.transform.scale(img, (self.gd.height / 4, self.gd.height / 4))
             left_gesture_icon_layout.blit(img, rect)
             addedOffset += self.iconOffset
 
-        # Right side icons (remaining gestures)
         addedOffset = 0
         right_gestures = self.gd.possibleGestures[3:]
         for i, gesture in enumerate(right_gestures):
@@ -127,14 +113,12 @@ class GestureScreen:
                 if self.gd.gestures[-1]["Name"] == gesture:
                     name = gesture + "_f"
             
-            # Load from the right folder
             img = pygame.image.load(f"icons/right/{name}.png").convert_alpha()
             rect = pygame.Rect(addedOffset, 0, self.gd.height / 4, self.gd.height / 4)
             img = pygame.transform.scale(img, (self.gd.height / 4, self.gd.height / 4))
             right_gesture_icon_layout.blit(img, rect)
             addedOffset += self.iconOffset
 
-        # Capture the current frame from the gesture detection stream
         currentFrame = self.gd.getCurrentFrame()
 
         if currentFrame is not None:
@@ -165,6 +149,9 @@ class GestureScreen:
 
     
     def addGameContent(self):
+        if self.game_over:
+            return 
+
         if self.canGenerate:
             self.canGenerate = self.mg.generate() 
         else:
@@ -178,6 +165,10 @@ class GestureScreen:
             self.player.parse_input_and_draw(self.gd.gestures)
             if not self.grid.get_rect().contains(self.player.collider):
                 self.player.collided(self.grid.get_rect(), outOfBounds=True)
+
+         # Check if the player is in the finish cell
+            if self.grid.get_cell(self.player.position) == "end":
+                self.game_over = True  # Set the game as finished if player reaches finish cell
 
     def addGameFinishedOverlay(self):
         self.gameFinishedOverlay.set_alpha(150)
@@ -202,6 +193,7 @@ class GestureScreen:
         self.addGameContent()
 
         if self.grid.completed:
+            self.game_over = True  # Set the game_over flag when the game finishes
             self.addGameFinishedOverlay()
 
         events = pygame.event.get()

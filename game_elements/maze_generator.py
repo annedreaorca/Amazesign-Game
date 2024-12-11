@@ -1,6 +1,7 @@
 from game_elements.grid import Grid
 import random
 
+
 class MazeGen:
     def __init__(self, grid: Grid):
         self.grid = grid
@@ -52,8 +53,7 @@ class MazeGen:
             posToCheck = (coord[0] + vector[0], coord[1] + vector[1])
             try:
                 if self.grid.get(posToCheck) != "white":
-                    if visualize:
-                        self.grid.set(posToCheck, "purple")
+                    None
                 else:
                     canMove = False
             except IndexError:

@@ -20,7 +20,7 @@ class Game:
         # Create a display surface to render all the game elements
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
 
-        self.font_name = 'assets/fonts/KARNIBLA-black.ttf'
+        self.font_name = 'assets/fonts/Square Game.otf'
         self.BLACK, self.WHITE = (0, 0, 0), (255, 255, 255)
 
         self.button_sfx = pygame.mixer.Sound("assets/sfx/button-sfx.mp3")
@@ -29,8 +29,6 @@ class Game:
         pygame.mixer.music.play(loops=-1, start=0.0)
 
         self.main_menu = MainMenu(self)
-        self.options = OptionsMenu(self)
-        self.credits = CreditsMenu(self)
         self.curr_menu = self.main_menu
 
     def check_events(self):

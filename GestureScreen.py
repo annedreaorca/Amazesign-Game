@@ -92,8 +92,12 @@ class GestureScreen:
         stream_x = (self.screen.get_width() - self.streamArea.get_width()) // 2
 
         # Create separate surfaces for left and right gesture icon layouts
-        left_gesture_icon_layout = pygame.Surface((self.gd.height / 4 * 3, self.gd.height / 4))  
-        right_gesture_icon_layout = pygame.Surface((self.gd.height / 4 * 3, self.gd.height / 4))  
+        # Calculate the width of each layout based on the number of icons and the gap
+        left_gesture_icon_layout_width = (len(self.gd.possibleGestures[:3]) * (self.gd.height / 4)) + (len(self.gd.possibleGestures[:3]) - 1) * self.iconOffset
+        right_gesture_icon_layout_width = (len(self.gd.possibleGestures[3:]) * (self.gd.height / 4)) + (len(self.gd.possibleGestures[3:]) - 1) * self.iconOffset
+        
+        left_gesture_icon_layout = pygame.Surface((left_gesture_icon_layout_width, self.gd.height / 4))  
+        right_gesture_icon_layout = pygame.Surface((right_gesture_icon_layout_width, self.gd.height / 4))  
         
         left_gesture_icon_layout.fill("white")
         right_gesture_icon_layout.fill("white")
@@ -130,13 +134,23 @@ class GestureScreen:
             right_gesture_icon_layout.blit(img, rect)
             addedOffset += self.iconOffset
 
+        # Capture the current frame from the gesture detection stream
         currentFrame = self.gd.getCurrentFrame()
-        img = pygame.image.frombuffer(currentFrame.tostring(), currentFrame.shape[1::-1], "BGR")
+
+        if currentFrame is not None:
+            print(f"Captured frame shape: {currentFrame.shape}")  # Debugging step
+            # Convert to a Pygame surface
+            img = pygame.image.frombuffer(currentFrame.tostring(), currentFrame.shape[1::-1], "BGR")
+            
+            # Ensure the image fits within the stream area
+            img = pygame.transform.scale(img, (self.streamArea.get_width(), self.streamArea.get_height()))
+            self.streamArea.blit(img, (0, 0))
+        else:
+            print("Error: No frame captured.")  # Debugging step
 
         # Draw the camera stream and gesture icons
         self.screen.blit(self.grid, ((self.screen.get_width() - self.grid.get_width()) // 2, grid_y))  
         self.screen.blit(self.streamArea, (stream_x, stream_y))  
-        self.streamArea.blit(img, (0, 0))  
 
         # Position the left and right icon layouts horizontally aligned with the stream
         icon_layout_y = stream_y + (self.streamArea.get_height() - left_gesture_icon_layout.get_height()) // 2  # Vertically center icons relative to the stream
@@ -149,6 +163,7 @@ class GestureScreen:
         self.screen.blit(left_gesture_icon_layout, (left_icon_x, icon_layout_y))  # Left side
         self.screen.blit(right_gesture_icon_layout, (right_icon_x, icon_layout_y))  # Right side
 
+    
     def addGameContent(self):
         if self.canGenerate:
             self.canGenerate = self.mg.generate() 

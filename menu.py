@@ -5,8 +5,8 @@ class Menu():
         self.game = game
         self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
         self.run_display = True
-        self.cursor_rect = pygame.Rect(0, 0, 20, 20)  # Cursor rectangle for selection
-        self.offset = -150  # Horizontal offset for cursor alignment
+        self.cursor_rect = pygame.Rect(0, 0, 20, 20) 
+        self.offset = -150  
 
     def draw_cursor(self):
         self.game.draw_text('>', 40, self.cursor_rect.x, self.cursor_rect.y)
@@ -30,7 +30,7 @@ class MainMenu(Menu):
             self.background = pygame.transform.scale(self.background, (self.game.DISPLAY_W, self.game.DISPLAY_H))
         except pygame.error as e:
             print(f"Error loading background image: {e}")
-            self.background = pygame.Surface((self.game.DISPLAY_W, self.game.DISPLAY_H))  # Placeholder background
+            self.background = pygame.Surface((self.game.DISPLAY_W, self.game.DISPLAY_H)) 
 
     def display_menu(self):
         self.run_display = True

@@ -9,15 +9,12 @@ class Game:
         self.running, self.playing = True, False
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
-        # Dynamically get the screen resolution
         self.DISPLAY_W, self.DISPLAY_H = pygame.display.Info().current_w, pygame.display.Info().current_h
-        
-        # Set fullscreen mode using the current screen resolution
+
         self.window_caption = "AMAZESIGN"
         self.window = pygame.display.set_mode((self.DISPLAY_W, self.DISPLAY_H), pygame.FULLSCREEN)
         pygame.display.set_caption(self.window_caption)
 
-        # Create a display surface to render all the game elements
         self.display = pygame.Surface((self.DISPLAY_W, self.DISPLAY_H))
 
         self.font_name = 'assets/fonts/KARNIBLA-black.ttf'
@@ -65,8 +62,7 @@ class Game:
     def game_loop(self):
         while self.playing:
             self.check_events()
-            self.display.fill(self.BLACK)  # Clear screen
-            # Update and render game elements here (e.g., player, enemies)
-            self.window.blit(self.display, (0, 0))  # Draw to the main window
+            self.display.fill(self.BLACK)
+            self.window.blit(self.display, (0, 0)) 
             pygame.display.update()
             self.reset_keys()

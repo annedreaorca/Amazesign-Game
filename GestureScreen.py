@@ -89,7 +89,6 @@ class GestureScreen:
             addedOffset += self.iconOffset
 
         currentFrame = self.gd.getCurrentFrame()
-        # code from https://stackoverflow.com/questions/19306211/opencv-cv2-image-to-pygame-image
         img = pygame.image.frombuffer(currentFrame.tostring(), currentFrame.shape[1::-1],
                                       "BGR")
 

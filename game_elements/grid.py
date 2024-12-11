@@ -17,7 +17,6 @@ class Grid(pygame.Surface):
         self.generateGrid()
 
     def loadTheme(self, theme: str):
-        """Load assets for the grid."""
         try:
             self.textures["wall"] = pygame.image.load(f'assets/wall.png')
             self.textures["path"] = pygame.image.load(f'assets/path.png')
@@ -29,7 +28,6 @@ class Grid(pygame.Surface):
 
     def generate_random_maze(self, maze_width, maze_height):
         """Generate a random maze and update the grid."""
-        # Resize the grid to the new maze dimensions
         self.grid_w = maze_width
         self.grid_h = maze_height
         self.states = [["black" for _ in range(self.grid_w)] for _ in range(self.grid_h)]
@@ -37,7 +35,6 @@ class Grid(pygame.Surface):
         visited = [[False for _ in range(self.grid_w)] for _ in range(self.grid_h)]
         stack = []
 
-        # Start at a random position
         start_x = random.randint(1, self.grid_w - 2)
         start_y = random.randint(1, self.grid_h - 2)
         stack.append((start_x, start_y))
@@ -45,9 +42,8 @@ class Grid(pygame.Surface):
 
         while stack:
             current_x, current_y = stack[-1]
-            self.states[current_y][current_x] = "white"  # Path is white
+            self.states[current_y][current_x] = "white"
 
-            # Check for unvisited neighbors
             neighbors = []
             for dx, dy in [(-2, 0), (2, 0), (0, -2), (0, 2)]:
                 nx, ny = current_x + dx, current_y + dy
@@ -62,7 +58,6 @@ class Grid(pygame.Surface):
             else:
                 stack.pop()
 
-        # Assign start and end points
         self.states[start_y][start_x] = "start"
         end_x, end_y = self.grid_w - 2, self.grid_h - 2
         self.states[end_y][end_x] = "end"
@@ -70,8 +65,7 @@ class Grid(pygame.Surface):
         self.generateGrid()
 
     def generateGrid(self, player: Player = None):
-        """Draw the grid with textures."""
-        for v_layer in range(self.grid_h):  # Loop through each grid cell
+        for v_layer in range(self.grid_h):
             for h_layer in range(self.grid_w):
                 rect = pygame.Rect(h_layer * self.shrinkRatio, v_layer * self.shrinkRatio, self.shrinkRatio, self.shrinkRatio)
 
@@ -79,10 +73,9 @@ class Grid(pygame.Surface):
                     self.blit(pygame.transform.scale(self.textures["wall"], rect.size), rect.topleft)
                 elif self.states[v_layer][h_layer] == "white":
                     self.blit(pygame.transform.scale(self.textures["path"], rect.size), rect.topleft)
-                elif self.states[v_layer][h_layer] == "yellow":  # Start/End points
+                elif self.states[v_layer][h_layer] == "yellow": 
                     self.blit(pygame.transform.scale(self.textures["start"], rect.size), rect.topleft)
                 
-                # Player collision checks
                 if player:
                     if self.get((h_layer, v_layer)) == "black" and rect.colliderect(player.collider):
                         player.collided(rect)
@@ -91,7 +84,6 @@ class Grid(pygame.Surface):
 
 
     def switchTheme(self, new_theme):
-        """Switch to a new theme dynamically."""
         self.loadTheme(new_theme)
         self.generateGrid()
 

@@ -103,9 +103,9 @@ class MainMenu(Menu):
 
         # Draw the button background
         surface = pygame.Surface((button_width, button_height), pygame.SRCALPHA)
-        bg_color = (204, 204, 204, 230) if is_selected else (11, 0, 16, 230)
+        bg_color = (127, 17, 224, 230) if is_selected else (11, 0, 16, 100)
         pygame.draw.rect(surface, bg_color, (0, 0, button_width, button_height), border_radius=50)
-        pygame.draw.rect(surface, (204, 204, 204), (0, 0, button_width, button_height), width=1, border_radius=50)
+        pygame.draw.rect(surface, (127, 17, 224), (0, 0, button_width, button_height), width=1, border_radius=50)
         self.game.display.blit(surface, (button_x, button_y))
 
         # Draw the button text

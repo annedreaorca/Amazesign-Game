@@ -1,7 +1,7 @@
 import mediapipe as mp
 import numpy as np
 from mediapipe.tasks import python
-from mediapipe.tasks.python import vision 
+from mediapipe.tasks.python import vision
 import cv2 as cv
 
 class GestureDetector:
@@ -55,7 +55,7 @@ class GestureDetector:
         self.recognizer = vision.GestureRecognizer.create_from_options(options)
 
     def initStream(self):
-        self.cam = cv.VideoCapture(0)
+        self.cam = cv.VideoCapture(1)
 
         if not self.cam.isOpened():
             print("Unable to access camera") 

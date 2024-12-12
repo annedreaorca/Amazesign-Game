@@ -1,6 +1,6 @@
 import pygame
 from ffpyplayer.player import MediaPlayer
-import time 
+import time
 
 class Menu():
     def __init__(self, game):
@@ -56,7 +56,6 @@ class MainMenu(Menu):
                 )
 
                 video_surface = pygame.transform.scale(video_surface, (self.game.DISPLAY_W, self.game.DISPLAY_H))
-
                 self.game.display.blit(video_surface, (0, 0))
 
             logo_x = self.mid_w - self.logo.get_width() / 2
@@ -69,7 +68,6 @@ class MainMenu(Menu):
             self.blit_screen()
 
     def get_video_frame(self):
-        """Retrieve the next frame from the video."""
         frame, val = self.video_player.get_frame()
         if frame:
             self.frame = frame[0]
@@ -183,7 +181,6 @@ class HowToPlayMenu(Menu):
                 )
 
                 video_surface = pygame.transform.scale(video_surface, (self.game.DISPLAY_W, self.game.DISPLAY_H))
-
                 self.game.display.blit(video_surface, (0, 0))
 
             logo_x = self.mid_w - self.logo.get_width() / 2
@@ -202,12 +199,10 @@ class HowToPlayMenu(Menu):
 
     def check_input(self):
         keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_RETURN] or keys[pygame.K_BACKSPACE]:
+        if keys[pygame.K_ESCAPE] or keys[pygame.K_BACKSPACE]:  # Use Esc or Backspace
             self.game.play_sound(self.game.button_sfx)
             self.game.curr_menu = MainMenu(self.game)  
             self.run_display = False  
-
 
     def draw_instructions(self):
         text_gap = 50  
@@ -246,9 +241,9 @@ class HowToPlayMenu(Menu):
         self.draw_return_button(button_y)
 
     def draw_return_button(self, button_y):
-        """Draw the 'Press Enter or Backspace to return' button with padding."""
+        """Draw the 'Press Esc or Backspace to return' button with padding."""
         font = pygame.font.Font(self.game.font_name, 30)
-        button_text = "Press Enter or Backspace to return"
+        button_text = "Press Esc or Backspace to return"
         text_surface = font.render(button_text, True, self.game.WHITE)
 
         padding_x = 30  

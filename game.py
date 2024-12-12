@@ -29,11 +29,13 @@ class Game:
         self.curr_menu = self.main_menu
 
     def check_events(self):
-        """Handles the pygame events."""
+        if not pygame.display.get_init():
+            return 
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running, self.playing = False, False
-                self.curr_menu.run_display = False  # If you're using a menu, stop it
+                self.curr_menu.run_display = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     self.START_KEY = True
@@ -45,11 +47,11 @@ class Game:
                     self.UP_KEY = True
 
     def reset_keys(self):
-        """Resets all control keys after handling them."""
+        """Reset key states."""
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
     def draw_text(self, text, size, x, y):
-        """Draws text on the screen."""
+        """Draw text to the display."""
         font = pygame.font.Font(self.font_name, size)
         text_surface = font.render(text, True, self.WHITE)
         text_rect = text_surface.get_rect()
@@ -61,17 +63,10 @@ class Game:
         sound.play()
 
     def game_loop(self):
-        """The main game loop."""
-        while self.running:
-            self.check_events()
-            if not self.playing:
-                break 
-
-            self.display.fill(self.BLACK)
+        """Main game loop."""
+        while self.playing:
+            self.check_events() 
+            self.display.fill(self.BLACK) 
             self.window.blit(self.display, (0, 0)) 
-            pygame.display.update()
-            self.reset_keys()
-
-            self.curr_menu.display()
-
-        pygame.quit()
+            pygame.display.update() 
+            self.reset_keys()  

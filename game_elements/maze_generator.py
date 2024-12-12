@@ -1,7 +1,6 @@
 from game_elements.grid import Grid
 import random
 
-
 class MazeGen:
     def __init__(self, grid: Grid):
         self.grid = grid
@@ -78,9 +77,7 @@ class MazeGen:
 
             except IndexError:
                 continue
-    
 
-        print(f"At: {pos}, Possible next moves (green): {availablePositions}")
         return availablePositions
 
     def generate(self) -> bool:  

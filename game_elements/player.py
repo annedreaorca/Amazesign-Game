@@ -7,25 +7,21 @@ class Particle:
         self.y = y
         self.size = size
         self.color = color
-        self.lifetime = lifetime  # How many frames the particle will last
-        self.velocity = [random.uniform(-1, 1), random.uniform(-1, 1)]  # Random direction
+        self.lifetime = lifetime
+        self.velocity = [random.uniform(-1, 1), random.uniform(-1, 1)]
     
     def update(self):
-        # Move the particle
         self.x += self.velocity[0]
         self.y += self.velocity[1]
         
-        # Decrease lifetime
         self.lifetime -= 1
         
-        # Reduce the particle's size and transparency as it fades
         self.size = max(self.size - 0.1, 0)
         self.color = (self.color[0], self.color[1], self.color[2], max(self.color[3] - 5, 0))
 
     def draw(self, screen):
         if self.lifetime > 0:
             pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), int(self.size))
-
 
 class Player:
     def __init__(self, screen, startPos: (), size=20, sprite_path="assets/character.png"):  
@@ -34,7 +30,7 @@ class Player:
         self.startPos = startPos
         self.x, self.y = (startPos[0], startPos[1])
         self.move_direction = 5
-        self.particles = []  # Initialize the particle system
+        self.particles = [] 
 
         if sprite_path:
             self.sprite = pygame.image.load(sprite_path)
@@ -44,15 +40,13 @@ class Player:
 
         self.collider = self.getCollider()
 
-    def draw(self): 
-        # Update and draw particles
+    def draw(self):
         for particle in self.particles[:]:
             particle.update()
             particle.draw(self.screen)
             if particle.lifetime <= 0:  
                 self.particles.remove(particle)
 
-        # Draw the player sprite or fallback shape
         if self.sprite:
             self.screen.blit(self.sprite, (self.x - self.size * 1.5, self.y - self.size * 1.5)) 
         else:
@@ -68,7 +62,6 @@ class Player:
             return
         last_gesture = gestureList[-1]['Name']
         
-        # Update position based on the latest gesture
         if last_gesture == "Closed_Fist":
             self.x += self.move_direction 
         elif last_gesture == "Open_Palm":
@@ -83,17 +76,15 @@ class Player:
         
         self.prevent_out_of_bounds()
 
-        # Create a particle effect
         self.create_particle()
 
         self.collider = self.getCollider()
         self.draw()
 
     def create_particle(self):
-        """Generate a particle at the player's position."""
-        particle_color = (255, 255, 255, 150)  # White with some transparency
-        particle_size = random.randint(3, 8)  # Random size
-        particle_lifetime = random.randint(20, 50)  # Random lifetime
+        particle_color = (255, 255, 255, 150) 
+        particle_size = random.randint(3, 8) 
+        particle_lifetime = random.randint(20, 50)
         particle = Particle(self.x, self.y, particle_size, particle_color, particle_lifetime)
         self.particles.append(particle)
 

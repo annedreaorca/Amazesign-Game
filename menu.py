@@ -8,7 +8,7 @@ class Menu():
         self.mid_w, self.mid_h = self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2
         self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
-        self.offset = -150 
+        self.offset = -150
 
     def draw_cursor(self):
         self.game.draw_text('>', 40, self.cursor_rect.x, self.cursor_rect.y)
@@ -44,7 +44,7 @@ class MainMenu(Menu):
             self.check_input()
 
             current_time = time.time()
-            if current_time - self.last_frame_time >= (1 / 30) / self.playback_speed: 
+            if current_time - self.last_frame_time >= (1 / 30) / self.playback_speed:
                 self.get_video_frame()
                 self.last_frame_time = current_time
 
@@ -167,7 +167,7 @@ class HowToPlayMenu(Menu):
         while self.run_display:
             self.game.check_events()
             self.check_input()
-          
+
             current_time = time.time()
             if current_time - self.last_frame_time >= (1 / 30) / self.playback_speed:
                 self.get_video_frame()
@@ -199,17 +199,17 @@ class HowToPlayMenu(Menu):
 
     def check_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_ESCAPE] or keys[pygame.K_BACKSPACE]:  # Use Esc or Backspace
+        if keys[pygame.K_ESCAPE] or keys[pygame.K_BACKSPACE]:
             self.game.play_sound(self.game.button_sfx)
-            self.game.curr_menu = MainMenu(self.game)  
-            self.run_display = False  
+            self.game.curr_menu = MainMenu(self.game)
+            self.run_display = False
 
     def draw_instructions(self):
-        text_gap = 50  
-        title_gap = 30  
-        padding_x = 40 
-        padding_y = 30  
-        button_gap = 40  
+        text_gap = 50
+        title_gap = 30
+        padding_x = 40
+        padding_y = 30
+        button_gap = 40
 
         font = pygame.font.Font(self.game.font_name, 40)
         max_text_width = max(font.size(line)[0] for line in self.instructions)
@@ -226,7 +226,7 @@ class HowToPlayMenu(Menu):
 
         start_y = box_y + padding_y
         for i, line in enumerate(self.instructions):
-            size = 50 if i == 0 else 40  
+            size = 50 if i == 0 else 40
             text_surface = font.render(line, True, self.game.WHITE)
             text_x = self.mid_w - text_surface.get_width() // 2
 
@@ -246,12 +246,12 @@ class HowToPlayMenu(Menu):
         button_text = "Press Esc or Backspace to return"
         text_surface = font.render(button_text, True, self.game.WHITE)
 
-        padding_x = 30  
-        padding_y = 20  
+        padding_x = 30
+        padding_y = 20
 
         text_width, text_height = text_surface.get_size()
-        button_width = text_width + 2 * padding_x  
-        button_height = text_height + 2 * padding_y 
+        button_width = text_width + 2 * padding_x
+        button_height = text_height + 2 * padding_y
         button_x = self.mid_w - button_width // 2
 
         surface = pygame.Surface((button_width, button_height), pygame.SRCALPHA)

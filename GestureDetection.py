@@ -44,7 +44,7 @@ class GestureDetector:
         if len(self.gestures) < 10:
             self.gestures.append(gestureData)
         else:
-            self.gestures[0:9] = self.gestures[1:10] 
+            self.gestures[0:9] = self.gestures[1:10]
             self.gestures[-1] = gestureData
 
     def configRecognizer(self, model_path):
@@ -58,7 +58,7 @@ class GestureDetector:
         self.cam = cv.VideoCapture(0)
 
         if not self.cam.isOpened():
-            print("Unable to access camera") 
+            print("Unable to access camera")
             self.cam.release()
             exit()
 
@@ -67,7 +67,7 @@ class GestureDetector:
 
         self.frame_count = 0
 
-    def getCurrentFrame(self) -> np.array: 
+    def getCurrentFrame(self) -> np.array:
         self.frame_count += 1
         retrieved, frame = self.cam.read()
 

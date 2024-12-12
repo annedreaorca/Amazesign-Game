@@ -1,5 +1,5 @@
 import pygame
-from menu import *
+from menu import MainMenu
 
 class Game:
     def __init__(self):
@@ -45,13 +45,16 @@ class Game:
                     self.DOWN_KEY = True
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+                if event.key == pygame.K_F4 and (event.mod & pygame.KMOD_ALT):
+                    self.running, self.playing = False, False
+                    self.curr_menu.run_display = False
+                    pygame.quit()
+                    exit()
 
     def reset_keys(self):
-        """Reset key states."""
         self.UP_KEY, self.DOWN_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
 
     def draw_text(self, text, size, x, y):
-        """Draw text to the display."""
         font = pygame.font.Font(self.font_name, size)
         text_surface = font.render(text, True, self.WHITE)
         text_rect = text_surface.get_rect()
@@ -59,14 +62,12 @@ class Game:
         self.display.blit(text_surface, text_rect)
 
     def play_sound(self, sound):
-        """Play a sound effect."""
         sound.play()
 
     def game_loop(self):
-        """Main game loop."""
         while self.playing:
-            self.check_events() 
-            self.display.fill(self.BLACK) 
-            self.window.blit(self.display, (0, 0)) 
-            pygame.display.update() 
-            self.reset_keys()  
+            self.check_events()
+            self.display.fill(self.BLACK)
+            self.window.blit(self.display, (0, 0))
+            pygame.display.update()
+            self.reset_keys()

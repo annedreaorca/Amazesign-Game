@@ -4,13 +4,13 @@ from game_elements import *
 import pygame
 import pygame_widgets
 
-class GestureScreen: 
+class GestureScreen:
     def __init__(self, game):
         pygame.init()
 
         self.game = game
-        self.screen = self.game.window 
-        pygame.display.set_caption(self.game.window_caption)  
+        self.screen = self.game.window
+        pygame.display.set_caption(self.game.window_caption)
 
         self.background_image = pygame.image.load("assets/backgrounds/main-background-menu.jpg").convert()
         self.background_image = pygame.transform.scale(self.background_image, (self.screen.get_width(), self.screen.get_height()))
@@ -34,13 +34,13 @@ class GestureScreen:
 
         self.gameFinishedOverlay: pygame.Surface = None
 
-        self.iconOffset: int = None 
-        self.heightOffset: int = None 
+        self.iconOffset: int = None
+        self.heightOffset: int = None
 
-        self.game_over = False 
-        self.initUI(gap=40) 
+        self.game_over = False
+        self.initUI(gap=40)
 
-    def initUI(self, gap): 
+    def initUI(self, gap):
         self.gd.initStream()
 
         gestureLayoutWidth = (((self.gd.height / 4) + gap) * len(self.gd.possibleGestures)) - gap  
@@ -49,7 +49,7 @@ class GestureScreen:
         self.gestureIconLayout = pygame.Surface((gestureLayoutWidth, self.gd.height / 4))
         self.gestureIconLayout.fill("purple")
 
-        self.heightOffset = 10  
+        self.heightOffset = 10
 
         sr = 60
         self.grid = Grid((1080, 720), sr)
@@ -115,19 +115,19 @@ class GestureScreen:
                 name = gesture + "_f"
 
             img = pygame.image.load(f"icons/right/{name}.png").convert_alpha()
-            img = pygame.transform.scale(img, (icon_size, icon_size)) 
+            img = pygame.transform.scale(img, (icon_size, icon_size))
             rect = pygame.Rect(addedOffset, 0, icon_size, icon_size)
             right_gesture_icon_layout.blit(img, rect)
             addedOffset += icon_size + self.iconOffset
 
         currentFrame = self.gd.getCurrentFrame()
         if currentFrame is not None:
-            print(f"Captured frame shape: {currentFrame.shape}")  
+            print(f"Captured frame shape: {currentFrame.shape}")
             img = pygame.image.frombuffer(currentFrame.tostring(), currentFrame.shape[1::-1], "BGR")
             img = pygame.transform.scale(img, (self.streamArea.get_width(), self.streamArea.get_height()))
             self.streamArea.blit(img, (0, 0))
         else:
-            print("Error: No frame captured.") 
+            print("Error: No frame captured.")
         self.screen.blit(self.grid, ((self.screen.get_width() - self.grid.get_width()) // 2, grid_y))
         self.screen.blit(self.streamArea, (stream_x, stream_y))
 
@@ -135,15 +135,15 @@ class GestureScreen:
         left_icon_x = stream_x - left_gesture_icon_layout.get_width() - 10
         right_icon_x = stream_x + self.streamArea.get_width() + 10
 
-        self.screen.blit(left_gesture_icon_layout, (left_icon_x, icon_layout_y))  
-        self.screen.blit(right_gesture_icon_layout, (right_icon_x, icon_layout_y))  
+        self.screen.blit(left_gesture_icon_layout, (left_icon_x, icon_layout_y))
+        self.screen.blit(right_gesture_icon_layout, (right_icon_x, icon_layout_y))
 
     def addGameContent(self):
         if self.game_over:
             return
 
         if self.canGenerate:
-            self.canGenerate = self.mg.generate() 
+            self.canGenerate = self.mg.generate()
         else:
             self.grid.resetColorMarkers()
             if self.mg.coordinates == []:
@@ -171,7 +171,7 @@ class GestureScreen:
         self.screen.blit(self.gameFinishedOverlay, (0, self.heightOffset))
         pygame.draw.rect(self.screen, "white", r.inflate(20, 20), border_radius=50)
         self.screen.blit(finishedTxt,
-                         (overlay_offset_w - txt_offset_w, (overlay_offset_h - txt_offset_h) + self.heightOffset))
+                        (overlay_offset_w - txt_offset_w, (overlay_offset_h - txt_offset_h) + self.heightOffset))
 
     def display(self):
         self.screen.blit(self.background_image, (0, 0))
@@ -179,7 +179,7 @@ class GestureScreen:
         self.addGameContent()
 
         if self.grid.completed:
-            self.game_over = True 
+            self.game_over = True
             self.addGameFinishedOverlay()
 
         events = pygame.event.get()

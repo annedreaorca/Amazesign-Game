@@ -2,29 +2,35 @@ import pygame
 import random
 
 class Particle:
-    def __init__(self, x, y, size, color, lifetime=30):
+    def __init__(self, x, y, size, color, velocity, lifetime=30):
         self.x = x
         self.y = y
         self.size = size
         self.color = color
+        self.velocity = velocity
         self.lifetime = lifetime
-        self.velocity = [random.uniform(-1, 1), random.uniform(-1, 1)]
-    
+        self.alpha = 40  # Lower initial opacity for a more transparent glow
+
     def update(self):
         self.x += self.velocity[0]
         self.y += self.velocity[1]
         
-        self.lifetime -= 1
-        
+        # Gradually reduce size and opacity
         self.size = max(self.size - 0.1, 0)
-        self.color = (self.color[0], self.color[1], self.color[2], max(self.color[3] - 5, 0))
-
+        self.alpha = max(self.alpha - 3, 0)  # Gradual fade-out with slower decrease in opacity
+        
     def draw(self, screen):
-        if self.lifetime > 0:
+        if self.lifetime > 0 and self.alpha > 0:
+            # Draw multiple layers with decreasing opacity to simulate glow
+            for offset in range(3, 0, -1):
+                glow_alpha = max(self.alpha - offset * 30, 0)
+                glow_color = (self.color[0], self.color[1], self.color[2], glow_alpha)
+                pygame.draw.circle(screen, glow_color, (int(self.x + offset), int(self.y + offset)), int(self.size))
+            # Draw the main particle at full opacity
             pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), int(self.size))
 
 class Player:
-    def __init__(self, screen, startPos: (), size=20, sprite_path="assets/character.png"):  
+    def __init__(self, screen, startPos: (), size=20, sprite_path="assets/sprite.png"):  
         self.screen = screen
         self.size = size  
         self.startPos = startPos
@@ -34,7 +40,7 @@ class Player:
 
         if sprite_path:
             self.sprite = pygame.image.load(sprite_path)
-            self.sprite = pygame.transform.scale(self.sprite, (self.size * 3, self.size * 3))  
+            self.sprite = pygame.transform.scale(self.sprite, (self.size * 5, self.size * 5))  
         else:
             self.sprite = None  
 
@@ -54,12 +60,12 @@ class Player:
                 self.particles.remove(particle)
 
         if self.sprite:
-            self.screen.blit(self.sprite, (self.x - self.size * 1.5, self.y - self.size * 1.5)) 
+            self.screen.blit(self.sprite, (self.x - self.size * 2.5, self.y - self.size * 2.5)) 
         else:
             pygame.draw.circle(self.screen, "#ffffff", (self.x, self.y), self.size)
 
     def getCollider(self):
-        sr = self.size * 3
+        sr = self.size * 5
         self.collider = pygame.Rect(self.x - sr / 2, self.y - sr / 2, sr, sr)
         return self.collider
 
@@ -81,18 +87,20 @@ class Player:
             self.y = self.startPos[1]
         
         self.prevent_out_of_bounds()
-
-        self.create_particle()
+        self.create_trail_particles()
 
         self.collider = self.getCollider()
         self.draw()
 
-    def create_particle(self):
-        particle_color = (255, 255, 255, 150) 
-        particle_size = random.randint(3, 8) 
-        particle_lifetime = random.randint(20, 50)
-        particle = Particle(self.x, self.y, particle_size, particle_color, particle_lifetime)
+
+    def create_trail_particles(self):
+        particle_color = (247, 102, 215, 180)  
+        particle_size = random.randint(4, 8)  # Size of the particles
+        particle_velocity = [random.uniform(1, 2), random.uniform(0, 1)]  # Direction and speed of the particles
+        particle_lifetime = 40  # Lifetime of the particles
+        particle = Particle(self.x, self.y, particle_size, particle_color, particle_velocity, particle_lifetime)
         self.particles.append(particle)
+
 
     def prevent_out_of_bounds(self):
         screen_width, screen_height = self.screen.get_size()

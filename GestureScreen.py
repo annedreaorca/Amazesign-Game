@@ -69,7 +69,7 @@ class GestureScreen:
 
         self.heightOffset = 10
 
-        sr = 60
+        sr = 120
         self.grid = Grid((1080, 720), sr)
 
         self.gameFinishedOverlay = pygame.Surface(
@@ -216,21 +216,17 @@ class GestureScreen:
 
     def addGameFinishedOverlay(self):
         self.gameFinishedOverlay.set_alpha(150)
-        finishedTxt = self.font.render("Finished!", True, "pink")
+        finishedTxt = self.font.render("Maze Completed", True, "pink")
 
-        txt_offset_w = finishedTxt.get_width() / 2
-        txt_offset_h = finishedTxt.get_height() / 2
-        overlay_offset_w = self.gameFinishedOverlay.get_width() / 2
-        overlay_offset_h = self.gameFinishedOverlay.get_height() / 2
-
-        r = pygame.Rect(overlay_offset_w - txt_offset_w, (overlay_offset_h - txt_offset_h)+self.heightOffset, finishedTxt.get_width(),
-                        finishedTxt.get_height())
+        # Calculate the vertical position for the text to align with the buttons
+        screen_center_y = self.screen.get_height() // 2
+        text_offset_h = finishedTxt.get_height() // 2
+        text_y_position = screen_center_y - text_offset_h
 
         self.screen.blit(self.gameFinishedOverlay, (0, self.heightOffset))
-        pygame.draw.rect(self.screen, "white", r.inflate(20, 20), border_radius=50)
-        self.screen.blit(finishedTxt,
-                        (overlay_offset_w - txt_offset_w, (overlay_offset_h - txt_offset_h) + self.heightOffset))
-        
+        self.screen.blit(finishedTxt, 
+                        (self.screen.get_width() // 2 - finishedTxt.get_width() // 2, text_y_position))
+
         if self.restart_button is None or self.main_menu_button is None:
             self.initButtons()
 
@@ -242,6 +238,7 @@ class GestureScreen:
         self.restart_button.draw()
         self.main_menu_button.listen(pygame.event.get())
         self.main_menu_button.draw()
+
 
     def display(self):
         self.screen.blit(self.background_image, (0, 0))

@@ -21,12 +21,7 @@ class Grid(pygame.Surface):
             self.textures["wall"] = pygame.image.load(f'assets/wall.png')
             self.textures["path"] = pygame.image.load(f'assets/path.png')
             self.textures["start"] = pygame.image.load(f'assets/start.png')
-
-            # Define the number of frames in the GIF (replace 5 with the actual number of frames you have)
-            NUM_FRAMES = 100
-            self.textures["end"] = [
-                pygame.image.load(f'assets/vortex/goal_ ({i}).png') for i in range(NUM_FRAMES)
-            ]
+            self.textures["end"] = pygame.image.load(f'assets/end.png')
         except FileNotFoundError as e:
             print("Error: One or more asset files are missing in the 'assets' directory!")
             raise e
@@ -69,7 +64,7 @@ class Grid(pygame.Surface):
 
         self.generateGrid()
 
-    def generateGrid(self, player: Player = None, frame_counter=0):
+    def generateGrid(self, player: Player = None):
         for v_layer in range(self.grid_h):
             for h_layer in range(self.grid_w):
                 rect = pygame.Rect(h_layer * self.shrinkRatio, v_layer * self.shrinkRatio, self.shrinkRatio, self.shrinkRatio)
@@ -80,11 +75,7 @@ class Grid(pygame.Surface):
                     self.blit(pygame.transform.scale(self.textures["path"], rect.size), rect.topleft)
                 elif self.states[v_layer][h_layer] == "yellow": 
                     self.blit(pygame.transform.scale(self.textures["start"], rect.size), rect.topleft)
-                elif self.states[v_layer][h_layer] == "end":
-                    # Animate the "end" texture
-                    end_frame = self.textures["end"][frame_counter % len(self.textures["end"])]
-                    self.blit(pygame.transform.scale(end_frame, rect.size), rect.topleft)
-
+                
                 if player:
                     if self.get((h_layer, v_layer)) == "black" and rect.colliderect(player.collider):
                         player.collided(rect)

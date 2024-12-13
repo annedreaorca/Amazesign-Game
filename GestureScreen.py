@@ -44,7 +44,7 @@ class GestureScreen:
         self.buttonSurface: pygame.Surface = None
         self.grid: Grid = None
         
-        self.font = pygame.font.SysFont("Serif", 32)
+        self.font = pygame.font.SysFont('assets/fonts/Square Game.otf', 32)
         self.canUpdateTitle = False
 
         self.gameFinishedOverlay: pygame.Surface = None
@@ -92,15 +92,15 @@ class GestureScreen:
         self.restart_button = ButtonWithVisibility(
             self.screen, screen_center_x - button_width // 2, screen_center_y - button_height - button_gap,
             button_width, button_height, text="Restart",
-            fontSize=32, margin=10, inactiveColour=(150, 150, 150), hoverColour=(200, 200, 200),
-            pressedColour=(100, 100, 100), onClick=self.restartGame
+            fontSize=32, margin=10, inactiveColour=(127, 17, 224, 230), hoverColour=(11, 0, 16, 100),
+            pressedColour=(11, 0, 16, 100), onClick=self.restartGame
         )
 
         self.main_menu_button = ButtonWithVisibility(
             self.screen, screen_center_x - button_width // 2, screen_center_y + button_gap,
             button_width, button_height, text="Main Menu",
-            fontSize=32, margin=10, inactiveColour=(150, 150, 150), hoverColour=(200, 200, 200),
-            pressedColour=(100, 100, 100), onClick=self.goToMainMenu
+            fontSize=32, margin=10, inactiveColour=(127, 17, 224, 230), hoverColour=(11, 0, 16, 100),
+            pressedColour=(11, 0, 16, 100), onClick=self.goToMainMenu
         )
 
     def restartGame(self):

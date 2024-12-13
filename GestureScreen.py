@@ -27,7 +27,7 @@ class GestureScreen:
         self.screen = self.game.window
         pygame.display.set_caption(self.game.window_caption)
 
-        self.background_image = pygame.image.load("assets/backgrounds/main-background-menu.jpg").convert()
+        self.background_image = pygame.image.load("assets/backgrounds/main-background-menu.jpeg").convert()
         self.background_image = pygame.transform.scale(self.background_image, (self.screen.get_width(), self.screen.get_height()))
 
         self.clock = pygame.time.Clock()

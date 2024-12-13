@@ -28,7 +28,7 @@ class Player:
         self.screen = screen
         self.size = size  
         self.startPos = startPos
-        self.x, self.y = (startPos[0], startPos[1])
+        self.x, self.y = startPos  
         self.move_direction = 5
         self.particles = [] 
 
@@ -38,6 +38,12 @@ class Player:
         else:
             self.sprite = None  
 
+        self.collider = self.getCollider()
+
+    def reset(self):
+        """Reset the player's position, particles, and collider."""
+        self.x, self.y = self.startPos  
+        self.particles = [] 
         self.collider = self.getCollider()
 
     def draw(self):

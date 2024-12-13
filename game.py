@@ -28,6 +28,9 @@ class Game:
         self.main_menu = MainMenu(self)
         self.curr_menu = self.main_menu
 
+    def show_main_menu(self):
+        self.curr_menu = self.main_menu
+
     def check_events(self):
         if not pygame.display.get_init():
             return 

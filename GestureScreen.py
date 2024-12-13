@@ -1,8 +1,23 @@
 from GestureDetection import GestureDetector
 from game_elements import *
+from pygame_widgets.button import Button
 
 import pygame
 import pygame_widgets
+
+class ButtonWithVisibility(Button):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.visible = True  # Initialize visibility to True
+
+    def setVisibility(self, visible: bool):
+        """Set the visibility of the button."""
+        self.visible = visible
+
+    def draw(self):
+        """Override draw method to only draw the button if visible."""
+        if self.visible:
+            super().draw()
 
 class GestureScreen:
     def __init__(self, game):
@@ -38,6 +53,9 @@ class GestureScreen:
         self.heightOffset: int = None
 
         self.game_over = False
+        self.restart_button = None
+        self.main_menu_button = None
+
         self.initUI(gap=40)
 
     def initUI(self, gap):
@@ -62,6 +80,45 @@ class GestureScreen:
         self.iconOffset = gap + (self.gd.height / 4)
 
         self.canGen()
+
+    def initButtons(self):
+        button_width = 200
+        button_height = 50
+        button_gap = 20
+
+        screen_center_x = self.screen.get_width() // 2
+        screen_center_y = self.screen.get_height() // 2
+
+        self.restart_button = ButtonWithVisibility(
+            self.screen, screen_center_x - button_width // 2, screen_center_y - button_height - button_gap,
+            button_width, button_height, text="Restart",
+            fontSize=32, margin=10, inactiveColour=(150, 150, 150), hoverColour=(200, 200, 200),
+            pressedColour=(100, 100, 100), onClick=self.restartGame
+        )
+
+        self.main_menu_button = ButtonWithVisibility(
+            self.screen, screen_center_x - button_width // 2, screen_center_y + button_gap,
+            button_width, button_height, text="Main Menu",
+            fontSize=32, margin=10, inactiveColour=(150, 150, 150), hoverColour=(200, 200, 200),
+            pressedColour=(100, 100, 100), onClick=self.goToMainMenu
+        )
+
+    def restartGame(self):
+        self.game_over = False
+        self.grid.resetAll()
+        self.player.reset() 
+        self.canGenerate = False
+        self.generating = False
+        self.initUI(gap=40)  
+        self.running = True
+
+        self.restart_button.setVisibility(False)
+        self.main_menu_button.setVisibility(False)
+
+    def goToMainMenu(self):
+        self.running = False
+        self.game.curr_menu = self.game.main_menu  # Directly set the current menu to the main menu
+
 
     def canGen(self):
         self.canUpdateTitle = True
@@ -172,6 +229,18 @@ class GestureScreen:
         pygame.draw.rect(self.screen, "white", r.inflate(20, 20), border_radius=50)
         self.screen.blit(finishedTxt,
                         (overlay_offset_w - txt_offset_w, (overlay_offset_h - txt_offset_h) + self.heightOffset))
+        
+        if self.restart_button is None or self.main_menu_button is None:
+            self.initButtons()
+
+        if self.game_over:
+            self.restart_button.setVisibility(True)
+            self.main_menu_button.setVisibility(True)
+
+        self.restart_button.listen(pygame.event.get())
+        self.restart_button.draw()
+        self.main_menu_button.listen(pygame.event.get())
+        self.main_menu_button.draw()
 
     def display(self):
         self.screen.blit(self.background_image, (0, 0))

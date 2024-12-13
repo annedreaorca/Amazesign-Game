@@ -8,7 +8,7 @@ import pygame_widgets
 class ButtonWithVisibility(Button):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.visible = True  # Initialize visibility to True
+        self.visible = True 
 
     def setVisibility(self, visible: bool):
         """Set the visibility of the button."""
@@ -112,12 +112,13 @@ class GestureScreen:
         self.initUI(gap=40)  
         self.running = True
 
-        self.restart_button.setVisibility(False)
-        self.main_menu_button.setVisibility(False)
-
+        self.restart_button.setVisibility(False)  
+        self.main_menu_button.setVisibility(False)  
     def goToMainMenu(self):
         self.running = False
-        self.game.curr_menu = self.game.main_menu  # Directly set the current menu to the main menu
+        self.game.curr_menu = self.game.main_menu  
+        self.restart_button.setVisibility(False) 
+        self.main_menu_button.setVisibility(False) 
 
 
     def canGen(self):

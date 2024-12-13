@@ -56,7 +56,7 @@ class GestureScreen:
         self.restart_button = None
         self.main_menu_button = None
 
-        self.initUI(gap=40)
+        self.initUI(gap=0)
 
     def initUI(self, gap):
         self.gd.initStream()
@@ -134,7 +134,7 @@ class GestureScreen:
             self.generating = True
 
     def addStream(self):
-        scale_factor = 4
+        scale_factor = 3.5
 
         total_available_height = self.screen.get_height() - self.heightOffset - self.streamArea.get_height() - self.gestureIconLayout.get_height() - 20
         grid_y = (total_available_height - self.grid.get_height()) // 2
@@ -189,8 +189,8 @@ class GestureScreen:
         self.screen.blit(self.streamArea, (stream_x, stream_y))
 
         icon_layout_y = stream_y + (self.streamArea.get_height() - left_gesture_icon_layout.get_height()) // 2
-        left_icon_x = stream_x - left_gesture_icon_layout.get_width() - 10
-        right_icon_x = stream_x + self.streamArea.get_width() + 10
+        left_icon_x = stream_x - left_gesture_icon_layout.get_width() - 25
+        right_icon_x = stream_x + self.streamArea.get_width() + 25
 
         self.screen.blit(left_gesture_icon_layout, (left_icon_x, icon_layout_y))
         self.screen.blit(right_gesture_icon_layout, (right_icon_x, icon_layout_y))
